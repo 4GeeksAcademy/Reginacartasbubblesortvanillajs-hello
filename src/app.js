@@ -1,86 +1,82 @@
-let cards = [];
-let history = [];
-const suits = ['♠️', '♥️', '♦️', '♣️']; 
+document.addEventListener("DOMContentLoaded", () => {
+   
+    function generateRandomCards(num) {
+        const suits = ['♠', '♣', '♦', '♥'];
+        const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const cards = [];
 
-function generateCards() {
-    const cardCount = parseInt(document.getElementById("cardCount").value);
-    cards = [];
-    history = [];
-
-    for (let i = 0; i < cardCount; i++) {
-        const cardValue = Math.floor(Math.random() * 13) + 1; 
-        const suit = suits[Math.floor(Math.random() * suits.length)]; 
-        const cardSymbol = getCardSymbol(cardValue); 
-        cards.push({ value: cardValue, suit, display: `${cardSymbol}${suit}` });
-    }
-
-    displayCards(cards);
-    document.getElementById('history').innerHTML = '';
-}
-
-function getCardSymbol(value) {
-    if (value === 1) return 'A';
-    if (value === 11) return 'J';
-    if (value === 12) return 'Q';
-    if (value === 13) return 'K';
-    return value;
-}
-
-function displayCards(cardsArray) {
-    const cardsContainer = document.getElementById("cardsContainer");
-    cardsContainer.innerHTML = '';
-    cardsArray.forEach((card) => {
-        const cardElement = document.createElement("div");
-        cardElement.className = `card ${card.suit === '♥️' || card.suit === '♦️' ? 'suit-red' : 'suit-black'}`;
-        cardElement.innerText = card.display;
-        cardsContainer.appendChild(cardElement);
-    });
-}
-
-function sortCards() {
-    let steps = [];
-    let sortedCards = [...cards];
-    let n = sortedCards.length;
-    let swapped;
-
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-        for (let j = 0; j < n - i - 1; j++) {
-            if (sortedCards[j].value > sortedCards[j + 1].value) {
-                [sortedCards[j], sortedCards[j + 1]] = [sortedCards[j + 1], sortedCards[j]];
-                swapped = true;
-                steps.push([...sortedCards]);
-            }
+        for (let i = 0; i < num; i++) {
+            const suit = suits[Math.floor(Math.random() * suits.length)];
+            const value = values[Math.floor(Math.random() * values.length)];
+            cards.push(`${value}${suit}`);
         }
-        if (!swapped) break;
+
+        console.log("Cartas generadas: ", cards); 
+        return cards;
     }
 
-    displayHistory(steps);
-}
+    
+    function createCardHTML(card) {
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('card');
+        cardElement.textContent = card;
+        return cardElement;
+    }
 
-function displayHistory(steps) {
-    const historyContainer = document.getElementById("history");
-    const stepTexts = [
-        "1", "2", "3", 
-        "4", "5", "6", 
-        "7", "8", "9", 
-        "10","11","12"
-    ];
+   
+    function displayCards(cards) {
+        const container = document.getElementById('cards-container');
+        container.innerHTML = ''; 
 
-    historyContainer.innerHTML = `
-        <div class="log-title"><span>Bubble Log:</span></div>
-        <div class="steps">
-            ${steps.map((step, index) => `
-                <div class="step">
-                    <span class="number">${stepTexts[index] || `Intercambio ${index + 1}`}</span>
-                    <div class="history-cards">
-                        ${step.map(card => `<span class="history-card">${card.display}</span>`).join('')}
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
+        cards.forEach(card => {
+            const cardHTML = createCardHTML(card); 
+            container.appendChild(cardHTML); 
+        });
+    }
 
+   
+    function selectionSort(cards) {
+        const sortedCards = [...cards]; 
+        const logList = document.getElementById('log-list');
 
+        for (let i = 0; i < sortedCards.length - 1; i++) {
+            let minIndex = i;
+            for (let j = i + 1; j < sortedCards.length; j++) {
+                if (sortedCards[j] < sortedCards[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            
+            [sortedCards[i], sortedCards[minIndex]] = [sortedCards[minIndex], sortedCards[i]];
 
+            
+            const logItem = document.createElement('li');
+            logItem.textContent = `Cambio: ${sortedCards.join(', ')}`;
+            logList.appendChild(logItem);
+        }
+
+        return sortedCards;
+    }
+
+    
+    document.getElementById('draw-button').addEventListener('click', () => {
+        const numCards = parseInt(document.getElementById('num-cards').value);
+        console.log(`Generando ${numCards} cartas...`);
+        const cards = generateRandomCards(numCards);
+        displayCards(cards); 
+    });
+
+   
+    document.getElementById('sort-button').addEventListener('click', () => {
+        const cardsContainer = document.getElementById('cards-container');
+        const currentCards = Array.from(cardsContainer.children).map(card => card.textContent);
+        console.log("Cartas antes de clasificar: ", currentCards); 
+
+        if (currentCards.length > 0) {
+            const sortedCards = selectionSort(currentCards);
+            console.log("Cartas ordenadas: ", sortedCards); 
+            displayCards(sortedCards); 
+            console.log("No hay cartas para ordenar.");
+        }
+    });
+});

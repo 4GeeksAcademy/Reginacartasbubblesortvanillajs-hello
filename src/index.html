@@ -3,31 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador y Ordenador de Cartas</title>
+    <title>Generador y Clasificación de Cartas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="input-container">
-            <input type="number" id="cardCount" value="5" min="1">
-            <div class="original">Original</div> 
-        </div>
-        <button onclick="generateCards()">Sorteo</button>
-        <button onclick="sortCards()">Clasificación</button>
-
-        <div class="cards-container" id="cardsContainer"></div>
-
-        <div class="bubble-log">
-            <h2>Bubble Log</h2>
-            <div class="history-cards" id="bubbleHistory"></div>
-        </div>
+        <h1>Generador y Clasificador de Cartas</h1>
         
-        <div class="history" id="history"></div>
+        <label for="num-cards">Número de cartas:</label>
+        <input type="number" id="num-cards" placeholder="Cantidad de cartas" min="1">
+        
+        <button id="draw-button">Sorteo</button>
+        <button id="sort-button">Clasificar</button>
+        
+        <div id="cards-container"></div>
+        
+        <h2>Registro de Cambios</h2>
+        <ul id="log-list"></ul>
     </div>
 
     <script src="app.js"></script>
 </body>
 </html>
- 
-
-
