@@ -1,5 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
-   
+
+    const cardValueMap = {
+        'A': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+        '7': 7,
+        '8': 8,
+        '9': 9,
+        '10': 10,
+        'J': 11,
+        'Q': 12,
+        'K': 13
+    };
+
     function generateRandomCards(num) {
         const suits = ['♠', '♣', '♦', '♥'];
         const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -11,11 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
             cards.push(`${value}${suit}`);
         }
 
-        console.log("Cartas generadas: ", cards); 
         return cards;
     }
 
-    
     function createCardHTML(card) {
         const cardElement = document.createElement('div');
         cardElement.classList.add('card');
@@ -23,60 +37,61 @@ document.addEventListener("DOMContentLoaded", () => {
         return cardElement;
     }
 
-   
     function displayCards(cards) {
         const container = document.getElementById('cards-container');
-        container.innerHTML = ''; 
-
+        container.innerHTML = '';
         cards.forEach(card => {
-            const cardHTML = createCardHTML(card); 
-            container.appendChild(cardHTML); 
+            const cardHTML = createCardHTML(card);
+            container.appendChild(cardHTML);
         });
     }
 
-   
+    function getCardValue(card) {
+        const value = card.slice(0, -1);
+        return cardValueMap[value];
+    }
+
     function selectionSort(cards) {
-        const sortedCards = [...cards]; 
+        const sortedCards = [...cards];
         const logList = document.getElementById('log-list');
+        logList.innerHTML = '';
 
         for (let i = 0; i < sortedCards.length - 1; i++) {
             let minIndex = i;
             for (let j = i + 1; j < sortedCards.length; j++) {
-                if (sortedCards[j] < sortedCards[minIndex]) {
+                if (getCardValue(sortedCards[j]) < getCardValue(sortedCards[minIndex])) {
                     minIndex = j;
                 }
             }
-            
             [sortedCards[i], sortedCards[minIndex]] = [sortedCards[minIndex], sortedCards[i]];
 
-            
             const logItem = document.createElement('li');
-            logItem.textContent = `Cambio: ${sortedCards.join(', ')}`;
+            logItem.textContent = `Paso ${i + 1}: ${sortedCards.join(', ')}`;
             logList.appendChild(logItem);
         }
 
         return sortedCards;
     }
 
-    
     document.getElementById('draw-button').addEventListener('click', () => {
         const numCards = parseInt(document.getElementById('num-cards').value);
-        console.log(`Generando ${numCards} cartas...`);
+        if (!numCards || numCards <= 0) {
+            alert('Por favor, ingresa un número válido de cartas.');
+            return;
+        }
+
         const cards = generateRandomCards(numCards);
-        displayCards(cards); 
+        document.getElementById('log-list').innerHTML = '';
+        displayCards(cards);
     });
 
-   
     document.getElementById('sort-button').addEventListener('click', () => {
         const cardsContainer = document.getElementById('cards-container');
         const currentCards = Array.from(cardsContainer.children).map(card => card.textContent);
-        console.log("Cartas antes de clasificar: ", currentCards); 
 
         if (currentCards.length > 0) {
             const sortedCards = selectionSort(currentCards);
-            console.log("Cartas ordenadas: ", sortedCards); 
-            displayCards(sortedCards); 
-            console.log("No hay cartas para ordenar.");
+            displayCards(sortedCards);
         }
     });
 });
