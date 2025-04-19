@@ -1,20 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     const cardValueMap = {
-        'A': 1,
-        '2': 2,
-        '3': 3,
-        '4': 4,
-        '5': 5,
-        '6': 6,
-        '7': 7,
-        '8': 8,
-        '9': 9,
-        '10': 10,
-        'J': 11,
-        'Q': 12,
-        'K': 13
+        'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
+        '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13
     };
+
+    let originalCards = [];
 
     function generateRandomCards(num) {
         const suits = ['♠', '♣', '♦', '♥'];
@@ -37,8 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return cardElement;
     }
 
-    function displayCards(cards) {
-        const container = document.getElementById('cards-container');
+    function displayCards(cards, containerId) {
+        const container = document.getElementById(containerId);
         container.innerHTML = '';
         cards.forEach(card => {
             const cardHTML = createCardHTML(card);
@@ -80,18 +71,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const cards = generateRandomCards(numCards);
+        originalCards = generateRandomCards(numCards);
+        displayCards(originalCards, 'cards-container');
+        document.getElementById('sorted-cards-container').innerHTML = '';
         document.getElementById('log-list').innerHTML = '';
-        displayCards(cards);
     });
 
     document.getElementById('sort-button').addEventListener('click', () => {
-        const cardsContainer = document.getElementById('cards-container');
-        const currentCards = Array.from(cardsContainer.children).map(card => card.textContent);
+        if (originalCards.length === 0) return;
 
-        if (currentCards.length > 0) {
-            const sortedCards = selectionSort(currentCards);
-            displayCards(sortedCards);
-        }
+        const sortedCards = selectionSort(originalCards);
+        displayCards(sortedCards, 'sorted-cards-container');
     });
 });
