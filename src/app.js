@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const sortedCards = [...cards];
         const logList = document.getElementById('log-list');
         logList.innerHTML = '';
-
+    
         for (let i = 0; i < sortedCards.length - 1; i++) {
             let minIndex = i;
             for (let j = i + 1; j < sortedCards.length; j++) {
@@ -54,13 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     minIndex = j;
                 }
             }
-            [sortedCards[i], sortedCards[minIndex]] = [sortedCards[minIndex], sortedCards[i]];
-
-            const logItem = document.createElement('li');
-            logItem.textContent = `Paso ${i + 1}: ${sortedCards.join(', ')}`;
-            logList.appendChild(logItem);
+    
+            if (minIndex !== i) {
+                [sortedCards[i], sortedCards[minIndex]] = [sortedCards[minIndex], sortedCards[i]];
+    
+                const logItem = document.createElement('li');
+                logItem.textContent = `Paso ${i + 1}: ${sortedCards.join(', ')}`;
+                logList.appendChild(logItem);
+            }
         }
-
+    
         return sortedCards;
     }
 
